@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {DataService} from './data.service';
+import { latLng, tileLayer } from 'leaflet';
 
 @Component({
   selector: 'app-root',
@@ -7,14 +7,15 @@ import {DataService} from './data.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  // Define a users property to hold our user data
-  users: Array<any>;
-
-  // Create an instance of the DataService through dependency injection
-  constructor(private _dataService: DataService) {
-
-    // Access the Data Service's getUsers() method we defined
-    this._dataService.getUsers()
-      .subscribe(res => this.users = res);
-  }
+  options = {
+    layers: [
+      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        subdomains: ['a', 'b', 'c'],
+        detectRetina: true
+      })
+    ],
+    zoom: 7,
+    center: latLng([ 46.879966, -121.726909 ])
+  };
 }
