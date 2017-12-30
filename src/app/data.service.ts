@@ -6,13 +6,11 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class DataService {
 
-  result:any;
+  constructor(private http: Http) { }
 
-  constructor(private _http: Http) { }
-
-  getUsers() {
-    return this._http.get("/api/users")
-      .map(result => this.result = result.json().data);
+  getJson() {
+    // this.http.get('map.geojson').subscribe(data => console.log(data.text()));
+    // return this.http.get('../assets/map.geojson');
+    return this.http.get('../assets/pg.json');
   }
-
 }
