@@ -11,6 +11,7 @@ export class DataService {
   getJson() {
     // this.http.get('map.geojson').subscribe(data => console.log(data.text()));
     // return this.http.get('../assets/map.geojson');
-    return this.http.get('../assets/pg.json');
+    // return this.http.get('../assets/map.geojson');
+    return this.http.get('../assets/map_small.geojson');
   }
 }
