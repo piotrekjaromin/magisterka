@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 var GeojsonModel = new Schema({
-  _id: String,
   type: String,
   features: [
     {
@@ -14,27 +13,12 @@ var GeojsonModel = new Schema({
         changeset: string,
         user: string,
         uid: string,
-        from: string,
         name: string,
         network: string,
-        operator: string,
         ref: string,
         route: string,
-        state: string,
-        to: string,
         type: string,
-        website: string,
-        id: string
-      },
-      geometry: {
-        type: string,
-        coordinates: [
-          [
-            [
-              number, number
-            ]
-          ]
-        ]
+        website: string
       }
     }
   ]
