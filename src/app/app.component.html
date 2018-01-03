@@ -1,5 +1,6 @@
-<div *ngIf="options != null" class="map"
+<div *ngIf="options != null " class="map"
      leaflet
      [leafletOptions]="options"
+     [leafletLayers]="layers"
      [leafletLayersControl]="layersControl">
 </div>
