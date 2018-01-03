@@ -4,9 +4,7 @@ import {Http} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Geojsonmodel} from './geojsonmodel';
 import {Feature} from './feature';
-import {GeoJsonObject} from 'geojson';
 import {icon, latLng, LayerGroup, marker, Marker, tileLayer, TileLayer} from 'leaflet';
-import {Geometry} from "./geometry";
 
 @Injectable()
 export class DataService {
@@ -56,52 +54,75 @@ export class DataService {
         filteredFeatures.push(feature);
       }
     }
-    // filteredFeatures2.push(filteredFeatures[3]);
-    // console.log(filteredFeatures[3].geometry.coordinates);
+    //  filteredFeatures2.push(filteredFeatures[6]);
+    // console.log(filteredFeatures[6]);
     geoModel.features = filteredFeatures;
     // const geoObject: GeoJsonObject = JSON.parse(JSON.stringify(geoModel));
     return geoModel;
   }
 
-  prepareMarkersLayer2(features: [Feature]): LayerGroup{
-
+  prepareMarkersLayer2(features: [Feature]): LayerGroup {
 
     var markers: [Marker] = <[Marker]>[];
-    for(let feature of features) {
-      for(var i = 0;  i < feature.geometry.coordinates.length - 1; i++ ) {
 
-        let x0 = feature.geometry.coordinates[i][0];
-        let x1 = feature.geometry.coordinates[i + 1][0];
-        if (x0 > x1) {
-          const tmp = x0;
-          x0 = x1;
-          x1 = tmp;
-        }
-        let y0 = feature.geometry.coordinates[i][1];
-        let y1 = feature.geometry.coordinates[i + 1][1];
-        if (y0 > y1) {
-          const tmp = y0;
-          y0 = y1;
-          y1 = tmp;
-        }
-        const xLenght = x1 - x0;
-        const yLength = y1 - y0;
+    for (let feature of features) {
+      const arrayOfLengths = this.getStreetLength(feature.geometry.coordinates);
+      const totalLengthOfStreet = arrayOfLengths[arrayOfLengths.length - 3]
+      var currentLength = 0;
 
-        const streetLength = Math.sqrt(Math.pow(xLenght, 2) + Math.pow(yLength, 2));
-        markers.push(marker([y1 - (yLength / 2), x1 - (xLenght / 2) ], {
+      for (var i = 0;  i < arrayOfLengths.length; i += 3 ) {
+        currentLength += arrayOfLengths[i];
+        const randomSpeed = Math.floor(Math.random() * (15));
+
+        if (currentLength >= (totalLengthOfStreet / 2)) {
+          markers.push(marker([arrayOfLengths[i + 1], arrayOfLengths[i + 2] ], {
             icon: icon({
-                iconSize: [25, 41],
-                iconAnchor: [13, 41],
-                iconUrl: 'assets/marker-icon.png',
-                shadowUrl: 'assets/marker-shadow.png'
-              }
-            )
-          }
-          )
-        );
+              iconSize: [25, 25],
+              iconAnchor: [0, 0],
+              iconUrl: 'assets/' + randomSpeed + '.png'
+            })
+          }));
+          break;
+        }
       }
     }
     return new LayerGroup(markers);
+  }
+
+  private getStreetLength(coordinates: [[number, number]]): [number, number, number] {
+    var arrayOfLength: [number, number, number] = <[number, number, number]>[];
+    var totalLength = 0;
+
+    for(var i = 0; i < coordinates.length - 1; i++) {
+      let x0 = coordinates[i][0];
+      let x1 = coordinates[i + 1][0];
+
+      if (x0 > x1) {
+        const tmp = x0;
+        x0 = x1;
+        x1 = tmp;
+      }
+
+      let y0 = coordinates[i][1];
+      let y1 = coordinates[i + 1][1];
+
+      if (y0 > y1) {
+        const tmp = y0;
+        y0 = y1;
+        y1 = tmp;
+      }
+
+      const xLenght = x1 - x0;
+      const yLength = y1 - y0;
+
+      const length =  Math.sqrt(Math.pow(xLenght, 2) + Math.pow(yLength, 2)); // length between two nearest coordinates
+      const latCoordinate = y1 - (yLength / 2); // center latitude coordinate between two nearest coordinates
+      const longCoordinate = x1 - (xLenght / 2); // center longitude coordinate between two nearest coordinates
+      arrayOfLength.push(length, latCoordinate, longCoordinate);
+      totalLength += length;
+    }
+    arrayOfLength.push(totalLength, 0, 0)
+    return arrayOfLength;
   }
 
 
