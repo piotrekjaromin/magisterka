@@ -4,6 +4,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { AppComponent } from './app.component';
 import {HttpModule} from '@angular/http';
 import {DataService} from './data.service';
+import {SpeedService} from './speed.service';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,7 @@ import {DataService} from './data.service';
     HttpModule,
     LeafletModule.forRoot()
   ],
-  providers: [DataService],
+  providers: [DataService, SpeedService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

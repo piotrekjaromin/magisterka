@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import {Geojsonmodel} from './geojsonmodel';
 import {Feature} from './feature';
 import {icon, latLng, LayerGroup, marker, Marker, tileLayer, TileLayer} from 'leaflet';
+import {SpeedService} from './speed.service';
 
 @Injectable()
 export class DataService {
@@ -13,7 +14,7 @@ export class DataService {
   }
 
   getJson() {
-    return this.http.get('../assets/map_small.geojson');
+    return this.http.get('../assets/map_medium.geojson');
   }
 
   getOnlyStreet(geoModel: Geojsonmodel): Geojsonmodel {
@@ -54,32 +55,29 @@ export class DataService {
         filteredFeatures.push(feature);
       }
     }
-    //  filteredFeatures2.push(filteredFeatures[6]);
-    // console.log(filteredFeatures[6]);
     geoModel.features = filteredFeatures;
-    // const geoObject: GeoJsonObject = JSON.parse(JSON.stringify(geoModel));
     return geoModel;
   }
 
-  prepareMarkersLayer2(features: [Feature]): LayerGroup {
+  prepareMarkersLayer(features: [Feature]): LayerGroup {
 
     var markers: [Marker] = <[Marker]>[];
 
     for (let feature of features) {
       const arrayOfLengths = this.getStreetLength(feature.geometry.coordinates);
-      const totalLengthOfStreet = arrayOfLengths[arrayOfLengths.length - 3]
-      var currentLength = 0;
+      const totalLengthOfStreet = arrayOfLengths[arrayOfLengths.length - 3];
 
-      for (var i = 0;  i < arrayOfLengths.length; i += 3 ) {
+      var currentLength = 0;
+      var maxSpeed = SpeedService.getMaxSpeed(feature, totalLengthOfStreet * 111196.672);
+      for (var i = 0; i < arrayOfLengths.length; i += 3) {
         currentLength += arrayOfLengths[i];
-        const randomSpeed = Math.floor(Math.random() * (15));
 
         if (currentLength >= (totalLengthOfStreet / 2)) {
-          markers.push(marker([arrayOfLengths[i + 1], arrayOfLengths[i + 2] ], {
+          markers.push(marker([arrayOfLengths[i + 1], arrayOfLengths[i + 2]], {
             icon: icon({
               iconSize: [25, 25],
               iconAnchor: [0, 0],
-              iconUrl: 'assets/' + randomSpeed + '.png'
+              iconUrl: 'assets/' + maxSpeed + '.png'
             })
           }));
           break;
@@ -93,7 +91,7 @@ export class DataService {
     var arrayOfLength: [number, number, number] = <[number, number, number]>[];
     var totalLength = 0;
 
-    for(var i = 0; i < coordinates.length - 1; i++) {
+    for (var i = 0; i < coordinates.length - 1; i++) {
       let x0 = coordinates[i][0];
       let x1 = coordinates[i + 1][0];
 
@@ -115,7 +113,7 @@ export class DataService {
       const xLenght = x1 - x0;
       const yLength = y1 - y0;
 
-      const length =  Math.sqrt(Math.pow(xLenght, 2) + Math.pow(yLength, 2)); // length between two nearest coordinates
+      const length = Math.sqrt(Math.pow(xLenght, 2) + Math.pow(yLength, 2)); // length between two nearest coordinates
       const latCoordinate = y1 - (yLength / 2); // center latitude coordinate between two nearest coordinates
       const longCoordinate = x1 - (xLenght / 2); // center longitude coordinate between two nearest coordinates
       arrayOfLength.push(length, latCoordinate, longCoordinate);
@@ -135,7 +133,7 @@ export class DataService {
   }
 
   prepareOptions(layer: TileLayer) {
-    return  {
+    return {
       layers: [
         layer]
       ,

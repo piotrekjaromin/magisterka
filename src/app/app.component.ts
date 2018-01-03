@@ -16,8 +16,6 @@ export class AppComponent implements OnInit {
   onlyStreetGeoLayer = null;
   layersControl = null;
   layers = null;
-  layers2 = null;
-
 
   constructor(private dataService: DataService) {
   }
@@ -31,10 +29,6 @@ export class AppComponent implements OnInit {
 
       this.mainLayer = this.dataService.prepareMainLayer();
 
-
-      this.layers2 = this.dataService.prepareMarkersLayer2(this.onlyStreetGeoModel.features);
-      console.log(this.layers2);
-
       this.options = this.dataService.prepareOptions(this.mainLayer);
       this.layersControl = {
         baseLayers: {
@@ -43,7 +37,7 @@ export class AppComponent implements OnInit {
         overlays: {
           'All objects': this.fullGeoLayer,
           'Only street': this.onlyStreetGeoLayer,
-          'Markers': this.dataService.prepareMarkersLayer2(this.onlyStreetGeoModel.features)
+          'Markers': this.dataService.prepareMarkersLayer(this.onlyStreetGeoModel.features)
         }
       };
     });

@@ -28,6 +28,8 @@ export class Properties {
               public construction: string,
               public landcover: string,
               public service: string,
-              public boundary: string
+              public boundary: string,
+              public amenity: string,
+              public maxSpeed: string
               ) {}
 }
