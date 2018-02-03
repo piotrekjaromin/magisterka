@@ -14,7 +14,7 @@ export class DataService {
   }
 
   getJson() {
-    return this.http.get('../assets/map_medium.geojson');
+    return this.http.get('../assets/map_small.geojson');
   }
 
   getOnlyStreet(geoModel: Geojsonmodel): Geojsonmodel {
@@ -33,25 +33,37 @@ export class DataService {
         && feature.properties.highway !== 'track'
         && feature.properties.highway !== 'steps'
         && feature.properties.highway !== 'proposed'
-        // && feature.properties.highway !== 'residential'// to remove
-        // && feature.properties.surface !== 'asphalt'// to remove
+
         && feature.properties.natural === undefined
         && feature.properties.barrier === undefined
         && feature.properties.waterway === undefined
-        && feature.properties.highway !== 'tertiary'
+        // && feature.properties.highway !== 'residential' // to remove
+        // && feature.properties.surface !== 'asphalt' // to remove
+        // && feature.properties.highway !== 'tertiary' // to remove
         // && feature.properties.highway !== 'living_street' // to remove
+        // && feature.properties.bicycle === undefined // to remove
+        // && feature.properties.highway === undefined // to remove
+        // && feature.properties.highway !== 'service' // to remove
+        // && feature.properties.highway !== 'primary' // to remove
+        // && feature.properties.highway !== 'secondary' // to remove
+        // && feature.properties.highway !== 'construction' // to remove
         && feature.properties.location !== 'overhead'
         && feature.properties.location !== 'underground'
         && feature.properties.traffic_calming !== 'island'
         && feature.properties.railway === undefined
         && feature.properties.man_made === undefined
+        && feature.properties.network === undefined
         && feature.properties.highway !== 'pedestrian'
         && feature.properties.boundary === undefined
         && feature.properties.construction !== 'footway'
         && feature.properties.landcover !== 'grass'
         && feature.properties.service !== 'parking_aisle'
         && feature.properties.type !== 'parking_fee'
+        && feature.properties.power === undefined
+        && feature.properties.playground === undefined
+        && feature.properties.description === undefined
       ) {
+        // console.log(feature.properties);
         filteredFeatures.push(feature);
       }
     }

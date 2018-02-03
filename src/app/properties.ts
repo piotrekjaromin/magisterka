@@ -30,6 +30,11 @@ export class Properties {
               public service: string,
               public boundary: string,
               public amenity: string,
-              public maxSpeed: string
+              public maxSpeed: string,
+              public bicycle: string,
+              public power: string,
+              public description: string,
+              public advertising: string,
+              public playground: string
               ) {}
 }

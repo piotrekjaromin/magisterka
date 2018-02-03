@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {geoJSON, TileLayer} from 'leaflet';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {circle, geoJSON, TileLayer} from 'leaflet';
 import {DataService} from './data.service';
 import {Geojsonmodel} from './geojsonmodel';
 
@@ -9,19 +9,36 @@ import {Geojsonmodel} from './geojsonmodel';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  onlyStreetGeoModel: Geojsonmodel  = null
+  onlyStreetGeoModel: Geojsonmodel  = null;
   options = null;
   mainLayer: TileLayer;
-  fullGeoLayer = null
+  fullGeoLayer = null;
   onlyStreetGeoLayer = null;
   layersControl = null;
   layers = null;
 
-  constructor(private dataService: DataService) {
+  fitBounds: any = null;
+  circle = circle([ 46.95, -122 ], { radius: 50000000000 });
+
+
+  constructor(private dataService: DataService, private changeDetector: ChangeDetectorRef) {
   }
 
 
   ngOnInit(): void {
+
+    // this.circle.on('add', () => {
+    //
+    //   // Because we're outside of Angular's zone, this change won't be detected
+    //   this.fitBounds = this.circle.getBounds();
+    //
+    //   // But, it will if we tell Angular to detect changes
+    //   this.changeDetector.detectChanges();
+    //
+    //   console.log('In abc');
+    //
+    // });
+
     this.dataService.getJson().subscribe(data => {
       this.fullGeoLayer = geoJSON(data.json());
       this.onlyStreetGeoModel = this.dataService.getOnlyStreet(data.json());
@@ -41,5 +58,7 @@ export class AppComponent implements OnInit {
         }
       };
     });
+
   }
+
 }
